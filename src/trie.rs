@@ -87,4 +87,20 @@ mod tests {
         assert!(noeud_0.children[6].is_some());
         assert!(noeud_0.children[7].is_some());
     }
-}
+    #[test]
+    fn test_plantuml_contient_root() {
+        let trie = Trie::new();
+        let puml = trie.to_plantuml();
+        assert!(puml.contains("@startmindmap"));
+        assert!(puml.contains("root"));
+        assert!(puml.contains("@endmindmap"));
+    }
+
+    #[test]
+    fn test_trie_vide() {
+        let trie = Trie::new();
+        for enfant in &trie.root.children {
+            assert!(enfant.is_none());
+        }
+    }
+}   
