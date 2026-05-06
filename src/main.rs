@@ -1,28 +1,19 @@
-use std::fs;
-use serde::Deserialize;
+use phone_trie::{lire_contacts, generer_plantuml};
+use phone_trie::trie::Trie;
 
-mod trie;
-use trie::Trie;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let contacts = lire_contacts("data/contacts.json")?;
 
-#[derive(Deserialize, Debug)]
-struct Contact {
-    name: String,
-    phone: String,
-}
-
-fn main() {
-    let data = fs::read_to_string("data/contacts.json")
-        .expect("Impossible de lire le fichier JSON");
-
-    let contacts: Vec<Contact> = serde_json::from_str(&data)
-        .expect("Erreur de parsing JSON");
-
-    let mut mon_trie = Trie::new();
-
+    let mut trie = Trie::new();
     for contact in &contacts {
-        mon_trie.insert(&contact.phone, &contact.name);
-        println!("Inséré : {} -> {}", contact.name, contact.phone);
+        trie.insert(&contact.phone, &contact.name);
     }
 
-    println!("\nTrie construit avec {} contacts !", contacts.len());
+    let puml = trie.to_plantuml();
+    generer_plantuml("graph/contacts.puml", &puml)?;
+
+    println!("Trie construit avec {} contacts !", contacts.len());
+    println!("Fichier PlantUML généré dans graph/contacts.puml !");
+
+    Ok(())
 }
