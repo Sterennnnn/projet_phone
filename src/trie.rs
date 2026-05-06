@@ -56,3 +56,35 @@ impl Trie {
         }
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_insertion_simple() {
+        let mut trie = Trie::new();
+        trie.insert("0612345678", "Alice");
+        assert!(trie.root.children[0].is_some());
+    }
+
+    #[test]
+    fn test_contact_en_fin_de_numero() {
+        let mut trie = Trie::new();
+        trie.insert("06", "Alice");
+        let noeud_0 = trie.root.children[0].as_ref().unwrap();
+        let noeud_6 = noeud_0.children[6].as_ref().unwrap();
+        assert_eq!(noeud_6.contact_name, Some("Alice".to_string()));
+    }
+
+    #[test]
+    fn test_plusieurs_contacts() {
+        let mut trie = Trie::new();
+        trie.insert("06", "Alice");
+        trie.insert("07", "Bob");
+        let noeud_0 = trie.root.children[0].as_ref().unwrap();
+        assert!(noeud_0.children[6].is_some());
+        assert!(noeud_0.children[7].is_some());
+    }
+}
