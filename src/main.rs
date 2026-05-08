@@ -11,6 +11,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let puml = trie.to_plantuml();
     generer_plantuml("graph/contacts.puml", &puml)?;
+
+    println!("\nEntrez un préfixe à rechercher :");
+    let mut prefixe = String::new();
+    std::io::stdin().read_line(&mut prefixe)?;
+    let prefixe = prefixe.trim();
+
+    let resultats = trie.rechercher(prefixe);
+    if resultats.is_empty() {
+        println!("Aucun contact trouvé pour le préfixe '{}'", prefixe);
+    } else {
+        println!("Contacts trouvés pour '{}' :", prefixe);
+        for nom in &resultats {
+            println!("  -> {}", nom);
+        }
+    }
+
     println!("Trie construit avec {} contacts !", contacts.len());
     println!("Fichier PlantUML généré dans graph/contacts.puml !");
 
